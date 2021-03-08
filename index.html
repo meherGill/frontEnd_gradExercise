@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<head>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="themeChanger" class="themeChanger">
+        <div id="pseudobg">
+            <div id="leftText" class="changeThemeText">CHANGE THEME</div>
+            <div id="rightText" class="changeThemeText">CHANGE THEME</div>
+        </div>
+        <div id='canvas' class="canvas">
+            <ul id="cardList">
+                
+            </ul>
+        </div>
+    </div>
+    <div id="backshadow" class="backshadow"></div>
+    <button id="addPosts" class="addPosts">+</button>
+    <div id="addPostModal">
+        <div id="authorName">
+            <input type="text" class="input" id="author_text" placeholder="your author name">
+        </div>
+        <div id="userHandle">
+            <input type="text" class="input" id="userHandle_text" placeholder="your user handle">
+        </div>
+        <div class="divider"></div>
+        <div id="outerCardHeading">
+            <input type="text" class="input" id="outerCardHeading_text" placeholder="tweet heading">
+        </div>
+        <div id="outerCardContent">
+            <h3>Tweet Content</h3>
+            <textarea class="textarea" cols="30" rows="5"></textarea>
+        </div>
+        <div id="innerCardHeading">
+            <input type="text" class="input" id="innerCardHeading_text" placeholder="card heading">
+        </div>
+        <div id="innerCardContent">
+            <h3>Card Content</h3>
+            <textarea class="textarea" cols="30" rows="5"></textarea>
+        </div>
+        <button id="submit">
+            SUBMIT
+        </button>
+
+
+    </div>
+</body> 
+<script>
+    
+    const pseudobg = document.getElementById("pseudobg");
+    const leftText = document.getElementById("leftText");
+    const rightText = document.getElementById("rightText")
+    const themeChanger = document.getElementById('themeChanger');
+    const canvas = document.getElementById('canvas');
+    const addPostsBtn = document.getElementById("addPosts");
+    const modal = document.getElementById('addPostModal');
+    const backshadow = document.getElementById("backshadow")
+    const demoImage = document.getElementById("demoImage");
+    const imageFile = document.getElementById("imageInput");
+    const submitBtn = document.getElementById("submit");
+
+
+    const WHITE = "rgb(255, 255, 255)";
+    const BLACK = "rgb(0, 0, 0)";
+    const BODY = document.querySelector("body");
+    
+    const DEFAULT_JSON_DATA = [
+            {
+                img : "assets/ormid-arman.jpg",
+                outerCardHeading : "My Social Card",
+                metadata : {
+                    id : "@omidArmin",
+                    date : "05 March 2021",
+                },
+                outerCardContent : "Hello Readers, I hope you are enjoying learning the fundamentals of front-end development!",
+                author : "sean thompson",
+                innerCard : {
+                    title : "Good Luck Creating Your Social Card",
+                    content : "<h3>Learning React?</h3> Here are some things to help you.",
+                },
+            },
+            {
+                img : "assets/danlil-lebedev.jpg",
+                outerCardHeading : "Hello Everyone",
+                metadata : {
+                    id : "@danlilLbdv",
+                    date : "01 March 2021",
+                },
+                outerCardContent : "Hello Readers, here is some latin for you, Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. !", 
+                author : "Danlil Lebedev",
+                innerCard : {
+                    title : "Good Luck reading latin",
+                    content : "<h3>Learning Latin?</h3> Why? it's a dead language.",
+                },
+            },
+            {
+                img : "assets/ludwig-wiese.jpg",
+                outerCardHeading : "Good bye",
+                metadata : {
+                    id : "@ludwig",
+                    date : "05 Jan 2021",
+                },
+                outerCardContent : "Hello Readers, I hope you liked this demo!",
+                author : "ludwig wiese",
+                innerCard : {
+                    title : "Daft Punk split up :(",
+                    content : "<h3>Liked this demo?</h3> Ping meher to get more.",
+                },
+            },
+        ];
+        
+        const setTheme = () => {
+            // window.localStorage.removeItem('theme')
+            let theme = window.localStorage.getItem('theme');
+            if (!theme){
+                theme = "dark";
+            }
+            if (theme !== "dark" && theme !== "light"){
+                console.log(`the theme is ${theme}. That shouldnt be possible`);
+            }
+            else{
+                BODY.classList.add(theme);
+                window.localStorage.setItem('theme' , theme);
+            }
+    
+        }
+    
+        const loadContent = () => {
+            window.localStorage.removeItem('jsonData')
+            let jsonData = JSON.parse(window.localStorage.getItem('jsonData'));
+            if (!jsonData){
+                jsonData = DEFAULT_JSON_DATA;
+                window.localStorage.setItem('jsonData', JSON.stringify(jsonData));
+            }
+            const numOfCards = jsonData.length;
+            console.log(numOfCards)
+            const listElement = document.getElementById("cardList");
+            for (let cardNumber = 0; cardNumber < numOfCards; cardNumber++){
+
+                const li = document.createElement('li');
+                const outerCardDiv = document.createElement('div');
+                outerCardDiv.classList.add("outer-card");
+                li.appendChild(outerCardDiv);
+
+                const img = document.createElement("img");
+                img.classList.add('profile-picture');
+                img.src = jsonData[cardNumber].img;
+                outerCardDiv.appendChild(img);
+
+                const outerCardContentDiv = document.createElement("div");
+                outerCardContentDiv.classList.add('outer-card-content');
+                outerCardDiv.appendChild(outerCardContentDiv);
+
+                const outerCardHeader = document.createElement("div");
+                outerCardHeader.classList.add("outer-card-header");
+                outerCardContentDiv.appendChild(outerCardHeader);
+
+                const outerCardHeading = document.createElement('h3');
+                outerCardHeading.classList.add("my-social-card-heading");
+                const metadata = document.createElement('h3');
+                metadata.classList.add("metadata")
+
+                outerCardHeader.appendChild(outerCardHeading);
+                outerCardHeader.appendChild(metadata);
+
+                outerCardHeading.innerHTML = jsonData[cardNumber].outerCardHeading;
+                metadata.innerHTML += `${jsonData[cardNumber].metadata.id} <span style="color: inherit">&#8226;</span> ${jsonData[cardNumber].metadata.date}`;
+
+                const outerCardPara = document.createElement("div");
+                outerCardPara.classList.add("outer-card-para");
+                outerCardPara.innerHTML = `<p>${jsonData[cardNumber].outerCardContent}</p>`;
+                outerCardPara.innerHTML += `<br />{ author : ${jsonData[cardNumber].author}}`
+                outerCardContentDiv.appendChild(outerCardPara)
+                
+                const innerCard = document.createElement('div');
+                innerCard.classList.add("inner-card")
+                outerCardContentDiv.appendChild(innerCard);
+
+                const innerCardHeading = document.createElement("div");
+                innerCardHeading.classList.add("inner-card-heading");
+                innerCardHeading.innerHTML = `<h2 style="color: inherit;">${jsonData[cardNumber].innerCard.title}</h2>`
+                innerCard.appendChild(innerCardHeading);
+
+                const innerCardContent = document.createElement("div")
+                innerCardContent.classList.add("inner-card-content");
+                innerCardContent.innerHTML = jsonData[cardNumber].innerCard.content;
+                innerCard.appendChild(innerCardContent)
+                listElement.appendChild(li);
+
+            }
+        
+        }
+    
+        const toggleTheme = () => {
+
+            if (BODY.className === "dark"){
+                BODY.className = "light";
+                leftText.style.color = WHITE
+                rightText.style.color = WHITE
+            }
+            else{
+                BODY.className = "dark";
+                leftText.style.color = BLACK
+                rightText.style.color = BLACK
+                console.log(leftText.style.color);
+            }
+            window.localStorage.setItem("theme" , BODY.className)
+        }
+
+        const closeButtonHandler = () => {
+            addPostsBtn.classList.remove("close-button");
+            modal.classList.remove("show")
+
+            addPostsBtn.addEventListener('click', addPostsHandler)
+            addPostsBtn.removeEventListener('click' , closeButtonHandler);
+
+            backshadow.style.display = 'none';
+            // addPostsBtn.style.transform = "translateY(500px) rotate(-45deg)";
+            // modal.style.left = "-800px"
+        }
+        const addPostsHandler = () => {
+
+            addPostsBtn.classList.add("close-button")
+            modal.classList.add('show')
+            backshadow.style.display = "block";
+
+            addPostsBtn.removeEventListener('click', addPostsHandler)
+            addPostsBtn.addEventListener('click' , closeButtonHandler)
+        }
+
+        addPostsBtn.addEventListener('click' , addPostsHandler);
+
+        window.addEventListener("load", setTheme);
+        window.addEventListener("DOMContentLoaded", loadContent);
+        pseudobg.addEventListener("mouseenter", () => {
+            let colorChange;
+            const styles = window.getComputedStyle(leftText);
+
+            if (styles.getPropertyValue('color') === BLACK){
+                colorChange = WHITE;
+            }
+            else{
+                colorChange = BLACK;
+            }
+            leftText.style.color = colorChange;
+            rightText.style.color = colorChange;
+        })
+
+        pseudobg.addEventListener("mouseleave" , () =>{
+            let colorChange;
+            const styles = window.getComputedStyle(leftText);
+
+            if (styles.getPropertyValue('color') === WHITE){
+                colorChange = BLACK;
+            }
+            else{
+                colorChange = WHITE;
+            }
+            leftText.style.color = colorChange;
+            rightText.style.color = colorChange;
+        })
+
+        themeChanger.addEventListener('click' , toggleTheme)
+        canvas.addEventListener('click', () => {
+            event.stopPropagation();
+        })
+
+        
+
+    </script>
+</html>
