@@ -125,7 +125,7 @@
         }
     
         const loadContent = () => {
-            // window.localStorage.removeItem('jsonData')
+            window.localStorage.removeItem('jsonData')
             jsonData = JSON.parse(window.localStorage.getItem('jsonData'));
             if (!jsonData){
                 jsonData = DEFAULT_JSON_DATA;
@@ -140,6 +140,20 @@
                 const outerCardDiv = document.createElement('div');
                 outerCardDiv.classList.add("outer-card");
                 li.appendChild(outerCardDiv);
+
+                const deleteBtn = document.createElement('button');
+                deleteBtn.innerHTML = "DELETE";
+                deleteBtn.id = `deleteButton_${cardNumber}`;
+
+                deleteBtn.addEventListener('click' , function() {
+                    let indexToDelete = parseInt(this.id.split('_')[1]);
+                    jsonData.splice(indexToDelete,1);
+                    window.localStorage.setItem('jsonData' , JSON.stringify(jsonData));
+                    location.reload();
+                });
+
+                deleteBtn.classList.add("delete-tweet")
+                outerCardDiv.appendChild(deleteBtn);
 
                 const img = document.createElement("img");
                 img.classList.add('profile-picture');

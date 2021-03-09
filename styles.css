@@ -9,6 +9,16 @@
     /* transition:ease-in 0.5s; */
 }
 
+.delete-tweet{
+    width: 150px;
+    height: 40px;
+}
+
+.dark .delete-tweet{
+    background-color: rgb(185, 20, 20);
+    color: white;
+}
+
 .dark{
     color: white
 }
