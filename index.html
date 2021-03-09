@@ -16,34 +16,32 @@
     </div>
     <div id="backshadow" class="backshadow"></div>
     <button id="addPosts" class="addPosts">+</button>
-    <div id="addPostModal">
+    <form id="addPostModal" onsubmit="return false">
         <div id="authorName">
-            <input type="text" class="input" id="author_text" placeholder="your author name">
+            <input type="text" class="input" id="author_text" placeholder="your author name" required>
         </div>
         <div id="userHandle">
-            <input type="text" class="input" id="userHandle_text" placeholder="your user handle">
+            <input type="text" class="input" id="userHandle_text" placeholder="your user handle" required>
         </div>
         <div class="divider"></div>
         <div id="outerCardHeading">
-            <input type="text" class="input" id="outerCardHeading_text" placeholder="tweet heading">
+            <input type="text" class="input" id="outerCardHeading_text" placeholder="tweet heading" required>
         </div>
         <div id="outerCardContent">
             <h3>Tweet Content</h3>
-            <textarea class="textarea" cols="30" rows="5"></textarea>
+            <textarea id="outerCardContent_text" class="textarea" cols="30" rows="5"></textarea>
         </div>
         <div id="innerCardHeading">
-            <input type="text" class="input" id="innerCardHeading_text" placeholder="card heading">
+            <input type="text" class="input" id="innerCardHeading_text" placeholder="card heading" required>
         </div>
         <div id="innerCardContent">
             <h3>Card Content</h3>
-            <textarea class="textarea" cols="30" rows="5"></textarea>
+            <textarea id="innerCardContent_text" class="textarea" cols="30" rows="5"></textarea>
         </div>
-        <button id="submit">
+        <input type="submit" value="submit" id="submit">
             SUBMIT
-        </button>
-
-
-    </div>
+        </input>
+    </form>
 </body> 
 <script>
     
@@ -64,6 +62,7 @@
     const BLACK = "rgb(0, 0, 0)";
     const BODY = document.querySelector("body");
     
+    let jsonData;
     const DEFAULT_JSON_DATA = [
             {
                 img : "assets/ormid-arman.jpg",
@@ -126,14 +125,14 @@
         }
     
         const loadContent = () => {
-            window.localStorage.removeItem('jsonData')
-            let jsonData = JSON.parse(window.localStorage.getItem('jsonData'));
+            // window.localStorage.removeItem('jsonData')
+            jsonData = JSON.parse(window.localStorage.getItem('jsonData'));
             if (!jsonData){
                 jsonData = DEFAULT_JSON_DATA;
                 window.localStorage.setItem('jsonData', JSON.stringify(jsonData));
             }
             const numOfCards = jsonData.length;
-            console.log(numOfCards)
+            // console.log(numOfCards)
             const listElement = document.getElementById("cardList");
             for (let cardNumber = 0; cardNumber < numOfCards; cardNumber++){
 
@@ -265,7 +264,38 @@
             event.stopPropagation();
         })
 
-        
+        submitBtn.addEventListener('click', () => {
+            let x = document.querySelectorAll(":invalid")
+            console.log(x)
+            if (x.length !== 0){
+            }   
+            else{
+                
+                let currDate = new Date();
+                currDate = currDate.toDateString();
+                currDate = currDate.split(' ');
+                const dateStr = `${currDate[2]} ${currDate[1]} ${currDate[3]}`; 
+                const newElement = {
+                    img:"assets/ormid-arman.jpg",
+
+                    outerCardHeading : document.querySelector("#outerCardHeading_text").value,
+                    metadata : {
+                        id: document.querySelector("#userHandle_text").value,
+                        date: dateStr,
+                    },
+                    outerCardContent: document.querySelector('#outerCardContent_text').value,
+                    author : document.querySelector('#author_text').value,
+                    innerCard : {
+                        title: document.querySelector('#innerCardHeading_text').value,
+                        content: document.querySelector('#innerCardContent_text').value,
+                    },
+
+                };
+                jsonData.push(newElement);
+                window.localStorage.setItem('jsonData', JSON.stringify(jsonData));
+                location.reload();
+            }
+        });
 
     </script>
 </html>
